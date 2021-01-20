@@ -1,0 +1,66 @@
+{% extends 'home/basic.html' %}
+
+
+{% block activeContact %}
+    active
+{% endblock %}
+
+
+{% block body %}
+
+<div class="container my-5">
+
+
+  <h3>Contact Form</h3>
+<form class="my-5" action="/contact/" method="post" >
+  {% csrf_token %}
+
+<div class="form-group">
+    <label for="name">Name</label>
+    <input type="text" class="form-control" id="name" aria-describedby="nameHelp" name="name">
+    
+  </div>
+
+  <div class="form-group">
+    <label for="phone">Phone</label>
+    <input type="tel" class="form-control" id="phone" name="phone">
+  </div>
+
+
+  <div class="form-group">
+    <label for="email">Email address</label>
+    <input type="email" class="form-control" id="email" aria-describedby="emailHelp" name="email">
+    
+  </div>
+
+
+
+<div class="form-group">
+    <label for="content">Describe Your issue : </label>
+    <textarea rows="5" cols="20" class="form-control" id="content" aria-describedby="contentHelp" name="content">
+      
+    </textarea> 
+    
+  </div>
+
+
+  
+  <button type="submit" class="btn btn-primary">Submit</button>
+
+</form>
+</div>
+
+
+
+
+
+{% endblock body %}
+
+
+
+{% block js %}
+
+
+
+{% endblock js %}
+

@@ -1,0 +1,57 @@
+{% extends 'home/basic.html' %}
+
+{% block body %}
+
+
+<!-- Blogpost -->
+
+<div class="container">
+
+<h3 class="my-3">Search Results:</h3>
+
+
+{% if allPosts|length == 0 %}
+
+  <p>No Search Results</p>
+
+
+  Your search - <b>{{ query }}</b> - did not match any documents.
+
+<p class="my-3">Suggestions:</p>
+  <ul>
+      <li>Make sure that all words are spelled correctly.</li>
+      <li>Try different keywords.</li>
+      <li>Try more general keywords.</li>
+      <li>Try fewer keywords.</li>
+  </ul>
+
+{% else %}
+
+    {% for post in allPosts %}
+
+      <div class="col-md-12 my-5">
+          <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+            <div class="col p-4 d-flex flex-column position-static">
+              <strong class="d-inline-block mb-2 text-primary">Article By {{ post.author }}</strong>
+              <h3 class="mb-0">{{ post.title }}</h3>
+              <div class="mb-1 text-muted">{{ post.timestamp }}</div>
+              <p class="card-text mb-auto">{{ post.content|slice:"0:200" }}</p>
+              
+            </div>
+            
+          </div>
+        </div>
+
+
+    {% endfor %}
+
+{% endif %}
+
+
+
+
+
+</div>
+
+{% endblock body %}
+

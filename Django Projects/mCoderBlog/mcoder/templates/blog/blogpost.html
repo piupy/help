@@ -1,0 +1,139 @@
+{% extends 'blog/basic.html' %}
+{% block body %}
+{% load static %}
+{% load humanize %}
+{% load customfilters %}
+<!-- Blogpost -->
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 my-5">
+            <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                <div class="col p-4 d-flex flex-column position-static">
+                    <strong class="d-inline-block mb-2 text-primary">Article By {{ post.author }} ({{ post.views }} views)</strong>
+                    <h3 class="mb-0">{{ post.title }}</h3>
+                    <div class="mb-1 text-muted">{{ post.timestamp }}</div>
+                    <p class="card-text mb-auto">{{ post.content|safe }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h2>Comments ({{ comments.count }})</h2>
+    <div class="my-2">
+        {% if user.is_authenticated %}
+        <form method="post" action="/blog/postcomment/">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="comment">Enter Your Comment Here</label>
+                <input type="text" class="form-control" id="comment" name="comment">
+            </div>
+            <input type="hidden" name="postSno" value="{{ post.sno }}">
+            <input type="hidden" name="parentSno" value="">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        {% else %}
+        <p>
+            <h5>Please login to post a comment</h5>
+        </p>
+        {% endif %}
+    </div>
+    {% for comment in comments %}
+    <div class="row my-3">
+        <div class="col-md-1">
+            <img class="w-100 p-2 rounded-circle border border-dark" src="{% static '/images/user.jpg' %}">
+        </div>
+        <div class="col-md-11">
+            <div class="form-inline">
+                <b>{{ comment.user.username }} </b>
+                <h5><span class="badge badge-secondary mx-2">{{ comment.timestamp|naturaltime }}</span></h5>
+            </div>
+            <div>
+                {{ comment.comment }}
+            </div>
+
+
+<!-- Replies -->
+
+        <div class="my-2 reply">
+          
+        {% if user.is_authenticated %}
+
+          <p>
+            <a class="btn btn-primary btn-sm" data-toggle="collapse" href="#replyBox{{ comment.sno }}" role="button" aria-expanded="false" aria-controls="replyBox{{ comment.sno }}">
+              Reply
+            </a>
+          </p>
+          <div class="collapse" id="replyBox{{ comment.sno }}">
+            <div class="card card-body">
+              <form method="post" action="/blog/postcomment/">
+                  {% csrf_token %}
+                  <div class="form-group">
+                      <label for="reply">Enter Your Reply Here</label>
+                      <input type="text" class="form-control" id="reply" name="reply">
+                  </div>
+                  <input type="hidden" name="postSno" value="{{ post.sno }}">
+                  <input type="hidden" name="parentSno" value="{{ comment.sno }}">
+                  <button type="submit" class="btn btn-primary">Submit</button>
+              </form>
+            </div>
+          </div>
+
+          {% else %}
+
+
+          <p>
+            <button class="btn btn-primary btn-sm" data-toggle="collapse" aria-expanded="false" disabled >
+              Login to Reply
+            </button>
+          </p>
+
+
+          {% endif %}
+        
+          <div class="my-2">
+            
+              <!-- {% for replyParentSno,replyList in replyDict.items %}
+                    Parent Sno : {{ replyParentSno }}
+                    {% if comment.sno == replyParentSno %}
+                            {% for reply in replyList  %}
+                            <p> {{ reply }} </p>
+                            {% endfor %}
+                    {% endif %}
+              {% endfor %}
+ -->
+
+            {% for reply in replyDict|getReplyListFromReplyDict:comment.sno  %}
+
+            <div class="row my-2">
+                <div class="col-md-1">
+                    <img class="w-100 p-2 rounded-circle border border-dark" src="{% static '/images/user.jpg' %}">
+                </div>
+                <div class="col-md-11">
+
+
+                      <div class="form-inline">
+                          <b>{{ reply.user.username }} </b>
+                          <h5><span class="badge badge-secondary mx-2">{{ reply.timestamp|naturaltime }}</span></h5>
+                      </div>
+                      <div>
+                          {{ reply.comment }}
+                      </div>
+
+
+                </div>
+            </div>
+            
+            {% endfor %}
+
+      </div>
+
+<!-- End of Replies -->
+
+
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock body %}
+{% block activeHome %}
+active
+{% endblock %}
